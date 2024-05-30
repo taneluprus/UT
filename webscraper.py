@@ -4,7 +4,7 @@ import pandas as pd
 import openpyxl
 import datetime
 import time
-#requierments - bs4, requests, openpyxl, datetime, time
+#requierments - bs4, requests, openpyxl, datetime, time, Jinja2
 #file requierments (current) - startcolrecord.txt, testexcel1.xlsx
 #[TODO] CHANGE FILENAMES at some point
 
@@ -13,10 +13,10 @@ teststartcol=1
 while True:
     url='https://hipikuut.com/weewx/'
     page=requests.get(url)
-    soup=BeautifulSoup(page.text, 'html.parser')
+    weathersoup=BeautifulSoup(page.text, 'html.parser')
 
     #print(soup.find('table'))
-    teststr=str(soup.find('table'))
+    teststr=str(weathersoup.find('table'))
 
     removelist=['<table>', '<tbody>', '<tr>', '</tr>', '</tbody>', '</table>', '</td>', '<td class="label">','<td class="data">', '°', '\n\n']
     for word in removelist:
@@ -37,17 +37,34 @@ while True:
 
     andmed=convert(andmedlines)
 
-    #print(andmed)
 
-    #f=open('C:\\Users\\Tanel\\Desktop\\testfile.txt', 'w')
-    #f.write(str(andmed))
-    #f.close()
-    andmedvalues=andmed.values()
+
+    url='https://electrify.stiigo.com/'
+    page=requests.get(url)
+    hindsoup=BeautifulSoup(page.text, 'html.parser')
+
+    hindsoup=str(hindsoup.find_all('tr')[1:2])
+    removelist=['<table>', '<tbody>', '<tr>', '</tr>', '</tbody>', '</table>', '</td>', '<td class="label">','<td class="data">', '°', '\n\n', '<td align="right">', '<td><input id="emailaddr" style="width:235px; margin-bottom:3px" type="text"/>, <td><a href="#" id="regemail"><img alt="" src="regemail.png"/></a>]', '<td>', '<td><span style="font-size:11px">', '<b>', '</b>']
+    for word in removelist:
+        hindsoup=hindsoup.replace(word, '')
+
+    hindsoup=hindsoup[-14:-8]
+    MWh=float(hindsoup)
+    KWh=MWh/10
+    KWh=round(KWh, 3)
+    #KWh=str(KWh)
+    #KWh=(KWh,'s/KWh')
+    andmed['Hind']=KWh
+
 
     currenttime=datetime.datetime.now().strftime('%H:%M')
     #print(time)
     timelist=[]
     timelist.append(currenttime)
+
+    
+
+    andmedvalues=andmed.values()
 
     df=pd.DataFrame(andmedvalues, columns=timelist)
     #df=(df.T)
@@ -62,5 +79,5 @@ while True:
     f1.write('\n')  
     f1.close()
 
-    time.sleep(60)
+    time.sleep(1)
     
