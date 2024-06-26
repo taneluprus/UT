@@ -32,7 +32,7 @@ currenttime=datetime.datetime.now().strftime('%m-%d %H:%M')
 timelist=[]
 timelist.append(currenttime)
 
-f1=open(r'D:\UT\git\Elektrihind.txt', 'a')
+f1=open(r'D:\UT\git\UT\Elektrihind.txt', 'a')
 f1.write(currenttime)
 f1.write(' - ')
 f1.write(KWh)
