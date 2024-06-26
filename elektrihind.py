@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+import re
+import datetime
+
 
 url='https://electrify.stiigo.com/'
 page=requests.get(url)
@@ -11,20 +14,27 @@ removelist=['<table>', '<tbody>', '<tr>', '</tr>', '</tbody>', '</table>', '</td
 for word in removelist:
     soup1=soup1.replace(word, '')
 
-soup1=soup1[-14:-8]
+non_decimal = re.compile(r'[^\d.-]+')
+soup1=non_decimal.sub('', soup1)
+print(soup1)
+
+soup1=soup1[0:6]
+print(soup1)
 MWh=float(soup1)
 KWh=MWh/10
 KWh=round(KWh, 3)
-print(KWh)
+KWh=str(KWh)
 
-teststartcol=1
+KWhlist=[]
+KWhlist.append(KWh)
 
-from openpyxl import Workbook
+currenttime=datetime.datetime.now().strftime('%m-%d %H:%M')
+timelist=[]
+timelist.append(currenttime)
 
-cellid=()
-
-filename = "excelKWh.xlsx"
-workbook = Workbook()
-sheet = workbook.active
-sheet["A1"] = KWh
-workbook.save(filename=filename)
+f1=open(r'D:\UT\git\Elektrihind.txt', 'a')
+f1.write(currenttime)
+f1.write(' - ')
+f1.write(KWh)
+f1.write('\n')
+f1.close
