@@ -24,6 +24,7 @@ MWh=float(soup1)
 KWh=MWh/10
 KWh=round(KWh, 3)
 KWh=str(KWh)
+print(KWh)
 
 KWhlist=[]
 KWhlist.append(KWh)
