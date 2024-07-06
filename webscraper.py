@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
@@ -18,14 +21,14 @@ weathersoup=BeautifulSoup(page.text, 'html.parser')
 weatherstr=str(weathersoup.find('table'))
 
 #Eemaldab mittevajalikud elemendid
-removelist=['<table>', '<tbody>', '<tr>', '</tr>', '</tbody>', '</table>', '</td>', '<td class="label">','<td class="data">', '°', '\n\n']
+removelist=['<table>', '<tbody>', '<tr>', '</tr>', '</tbody>', '</table>', '</td>', '<td class="label">','<td class="data">', '\n\n', '°']
 for word in removelist:
     weatherstr=weatherstr.replace(word, '')
 weatherstr=weatherstr.replace('²','2')
 weatherstr=weatherstr.strip()
 andmedlines = weatherstr.splitlines()
 
-#Muudab andmete listi dict´iks
+#Muudab andmete listi dictiks
 def Convert(lst):
     res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
     return res_dct
@@ -88,7 +91,7 @@ startingcolumn=int(f1.readlines()[-1])
 with pd.ExcelWriter((directory+r'/ilm.xlsx'), mode='a', if_sheet_exists='overlay') as writer:
     df.to_excel(writer, sheet_name='Sheet1', index=False, startrow=startingcolumn, columns=None, header=None)
     startingcolumn+=1
-    
+
 #Kirjutab faili järgmise kirjutattava rea numbri
 f1.write('\n') 
 f1.write(str(startingcolumn))
