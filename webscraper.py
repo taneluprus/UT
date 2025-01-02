@@ -54,11 +54,11 @@ for word in removelist:
 #Eemaldab kõik mittenumbrid
 non_decimal = re.compile(r'[^\d.-]+')
 soup1=non_decimal.sub('', soup1)
-print(soup1)
+#print(soup1)
 
 #Muudab hinna s/KWh
 soup1=soup1[0:6]
-print(soup1)
+#print(soup1)
 MWh=float(soup1)
 KWh=MWh/10
 KWh=round(KWh, 3)
